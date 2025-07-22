@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: shyngys
+      changes:
+        - createTable:
+            tableName: record
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: text
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: record
