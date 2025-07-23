@@ -3,6 +3,7 @@ server:
 
 test:
   property: test
+  size: 24
 
 spring:
   application:
