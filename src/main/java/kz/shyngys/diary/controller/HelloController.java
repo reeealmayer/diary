@@ -1,7 +1,7 @@
 package kz.shyngys.diary.controller;
 
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import kz.shyngys.diary.config.TestConfig;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,15 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/hello")
-@ConfigurationProperties("test")
+@RequiredArgsConstructor
 public class HelloController {
 
-    @Setter
-    private String property;
+    private final TestConfig testConfig;
 
     @GetMapping
     public ResponseEntity<String> hello() {
-        return ResponseEntity.ok(property);
+        return ResponseEntity.ok(testConfig.getProperty());
     }
 
 }
