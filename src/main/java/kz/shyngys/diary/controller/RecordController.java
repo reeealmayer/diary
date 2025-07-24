@@ -7,13 +7,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS_API;
+import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID_API;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS_API;
+import static kz.shyngys.diary.util.Constants.GOT_RECORD_BY_ID_API;
 import static kz.shyngys.diary.util.Constants.RECORDS_API_URL;
 
 @RestController
@@ -32,4 +35,15 @@ public class RecordController {
         log.info(GOT_ALL_RECORDS_API);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RecordDto> getById(@PathVariable Long id) {
+        log.info(GET_RECORD_BY_ID_API, id);
+        Record record = recordService.getById(id);
+        RecordDto result = new RecordDto(record.getId(), record.getText());
+        log.info(GOT_RECORD_BY_ID_API, id);
+        return ResponseEntity.ok(result);
+    }
+
+
 }
