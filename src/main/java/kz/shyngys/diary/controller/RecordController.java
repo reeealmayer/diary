@@ -1,5 +1,7 @@
 package kz.shyngys.diary.controller;
 
+import jakarta.validation.Valid;
+import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.service.RecordService;
@@ -8,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +21,8 @@ import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS_API;
 import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID_API;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS_API;
 import static kz.shyngys.diary.util.Constants.GOT_RECORD_BY_ID_API;
+import static kz.shyngys.diary.util.Constants.POST_CREATED_RECORD_API;
+import static kz.shyngys.diary.util.Constants.POST_CREATE_RECORD_API;
 import static kz.shyngys.diary.util.Constants.RECORDS_API_URL;
 
 @RestController
@@ -45,5 +51,11 @@ public class RecordController {
         return ResponseEntity.ok(result);
     }
 
-
+    @PostMapping
+    public ResponseEntity<Void> create(@Valid @RequestBody CreateRecordRequestDto request) {
+        log.info(POST_CREATE_RECORD_API, request);
+        recordService.create(request);
+        log.info(POST_CREATED_RECORD_API);
+        return ResponseEntity.ok().build();
+    }
 }

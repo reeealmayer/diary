@@ -1,17 +1,21 @@
 package kz.shyngys.diary.service;
 
+import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.impl.RecordServiceImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -74,5 +78,32 @@ class RecordServiceTest {
         when(recordRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> recordService.getById(1L));
+    }
+
+    @Test
+    void testCreate_ShouldReturnRecord() {
+        // given
+        CreateRecordRequestDto dto = new CreateRecordRequestDto();
+        dto.setText("Test record");
+
+        Record savedRecord = new Record();
+        savedRecord.setId(1L);
+        savedRecord.setText("Test record");
+
+        // when
+        when(recordRepository.save(any(Record.class))).thenReturn(savedRecord);
+
+        // then
+        Record result = recordService.create(dto);
+
+        // assertions
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1L, result.getId());
+        Assertions.assertEquals("Test record", result.getText());
+
+        // verify that repository.save was called with expected Record
+        ArgumentCaptor<Record> captor = ArgumentCaptor.forClass(Record.class);
+        verify(recordRepository).save(captor.capture());
+        Assertions.assertEquals("Test record", captor.getValue().getText());
     }
 }

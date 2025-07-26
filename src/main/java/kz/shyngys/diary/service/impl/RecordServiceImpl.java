@@ -1,10 +1,10 @@
 package kz.shyngys.diary.service.impl;
 
+import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.RecordService;
-import kz.shyngys.diary.util.ErrorMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static kz.shyngys.diary.util.Constants.CREATED_RECORD;
+import static kz.shyngys.diary.util.Constants.CREATE_RECORD;
 import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS;
 import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS;
@@ -44,5 +46,15 @@ public class RecordServiceImpl implements RecordService {
         }
         log.info(GOT_RECORD_BY_ID, id, result.get());
         return result.get();
+    }
+
+    @Override
+    public Record create(CreateRecordRequestDto requestDto) {
+        log.info(CREATE_RECORD, requestDto);
+        Record record = new Record();
+        record.setText(requestDto.getText());
+        Record save = recordRepository.save(record);
+        log.info(CREATED_RECORD, save);
+        return save;
     }
 }
