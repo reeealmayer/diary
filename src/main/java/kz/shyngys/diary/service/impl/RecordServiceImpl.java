@@ -1,6 +1,7 @@
 package kz.shyngys.diary.service.impl;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
@@ -18,6 +19,8 @@ import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS;
 import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS;
 import static kz.shyngys.diary.util.Constants.GOT_RECORD_BY_ID;
+import static kz.shyngys.diary.util.Constants.UPDATED_RECORD;
+import static kz.shyngys.diary.util.Constants.UPDATE_RECORD;
 import static kz.shyngys.diary.util.ErrorMessages.RECORD_NOT_FOUND;
 
 @Service
@@ -55,6 +58,16 @@ public class RecordServiceImpl implements RecordService {
         record.setText(requestDto.getText());
         Record save = recordRepository.save(record);
         log.info(CREATED_RECORD, save);
+        return save;
+    }
+
+    @Override
+    public Record update(Long id, UpdateRecordRequestDto requestDto) {
+        log.info(UPDATE_RECORD, id, requestDto);
+        Record record = getById(id);
+        record.setText(requestDto.getText());
+        Record save = recordRepository.save(record);
+        log.info(UPDATED_RECORD, save);
         return save;
     }
 }

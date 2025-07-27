@@ -1,6 +1,7 @@
 package kz.shyngys.diary.service;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.model.Record;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public interface RecordService {
      * @return созданная запись с полученным ид {@link Record}
      */
     Record create(CreateRecordRequestDto requestDto);
+
+    /**
+     * Обновление записи
+     * @param id - ид записи
+     * @param requestDto - модель с записью
+     * @return обновленная запись {@link Record}
+     */
+    Record update(Long id, UpdateRecordRequestDto requestDto);
 }

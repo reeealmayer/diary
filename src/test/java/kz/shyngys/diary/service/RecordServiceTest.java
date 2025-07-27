@@ -1,6 +1,7 @@
 package kz.shyngys.diary.service;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
@@ -14,9 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -105,5 +108,37 @@ class RecordServiceTest {
         ArgumentCaptor<Record> captor = ArgumentCaptor.forClass(Record.class);
         verify(recordRepository).save(captor.capture());
         Assertions.assertEquals("Test record", captor.getValue().getText());
+    }
+
+    @Test
+    void testUpdate_ShouldReturnRecord() {
+        // given
+        Long id = 1L;
+
+        UpdateRecordRequestDto requestDto = new UpdateRecordRequestDto();
+        requestDto.setText("Updated text");
+
+        Record existingRecord = new Record();
+        existingRecord.setId(id);
+        existingRecord.setText("Old text");
+
+        Record updatedRecord = new Record();
+        updatedRecord.setId(id);
+        updatedRecord.setText("Updated text");
+
+        when(recordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
+        when(recordRepository.save(any(Record.class))).thenReturn(updatedRecord);
+
+        // when
+        Record result = recordService.update(id, requestDto);
+
+        // then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("Updated text", result.getText());
+        Assertions.assertEquals(id, result.getId());
+
+        verify(recordRepository).save(argThat(record ->
+                record.getText().equals("Updated text") && record.getId().equals(id)
+        ));
     }
 }
