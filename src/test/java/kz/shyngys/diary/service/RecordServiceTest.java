@@ -3,12 +3,14 @@ package kz.shyngys.diary.service;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
+import kz.shyngys.diary.mapper.RecordMapper;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.impl.RecordServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 
 import java.util.List;
@@ -31,11 +33,13 @@ class RecordServiceTest {
 
     private RecordService recordService;
     private RecordRepository recordRepository;
+    private RecordMapper recordMapper;
 
     @BeforeEach
     void setUp() {
         recordRepository = mock(RecordRepository.class);
-        recordService = new RecordServiceImpl(recordRepository);
+        recordMapper = Mappers.getMapper(RecordMapper.class);
+        recordService = new RecordServiceImpl(recordRepository, recordMapper);
     }
 
     @Test

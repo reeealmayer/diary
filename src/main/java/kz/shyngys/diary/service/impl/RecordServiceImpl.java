@@ -3,6 +3,7 @@ package kz.shyngys.diary.service.impl;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
+import kz.shyngys.diary.mapper.RecordMapper;
 import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.RecordService;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kz.shyngys.diary.util.ErrorMessages.RECORD_NOT_FOUND;
 import static kz.shyngys.diary.util.InfoMessages.CREATED_RECORD;
 import static kz.shyngys.diary.util.InfoMessages.CREATE_RECORD;
 import static kz.shyngys.diary.util.InfoMessages.DELETED_RECORD;
@@ -24,14 +26,15 @@ import static kz.shyngys.diary.util.InfoMessages.GOT_ALL_RECORDS;
 import static kz.shyngys.diary.util.InfoMessages.GOT_RECORD_BY_ID;
 import static kz.shyngys.diary.util.InfoMessages.UPDATED_RECORD;
 import static kz.shyngys.diary.util.InfoMessages.UPDATE_RECORD;
-import static kz.shyngys.diary.util.ErrorMessages.RECORD_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+//TODO возвращать дто
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
+    private final RecordMapper recordMapper;
 
     @Override
     public List<Record> getAll() {
@@ -57,9 +60,7 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Record create(CreateRecordRequestDto requestDto) {
         log.info(CREATE_RECORD, requestDto);
-        Record record = new Record();
-        record.setText(requestDto.getText());
-        Record save = recordRepository.save(record);
+        Record save = recordRepository.save(recordMapper.toEntity(requestDto));
         log.info(CREATED_RECORD, save);
         return save;
     }
