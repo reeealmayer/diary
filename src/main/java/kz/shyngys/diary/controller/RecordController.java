@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static kz.shyngys.diary.util.Constants.DELETED_RECORD_API;
-import static kz.shyngys.diary.util.Constants.DELETE_RECORD_API;
-import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS_API;
-import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID_API;
-import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS_API;
-import static kz.shyngys.diary.util.Constants.GOT_RECORD_BY_ID_API;
-import static kz.shyngys.diary.util.Constants.POST_CREATED_RECORD_API;
-import static kz.shyngys.diary.util.Constants.POST_CREATE_RECORD_API;
-import static kz.shyngys.diary.util.Constants.PUT_BEGIN_RECORD_API;
-import static kz.shyngys.diary.util.Constants.PUT_END_RECORD_API;
-import static kz.shyngys.diary.util.Constants.RECORDS_API_URL;
+import static kz.shyngys.diary.util.InfoMessages.DELETED_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.DELETE_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.GET_ALL_RECORDS_API;
+import static kz.shyngys.diary.util.InfoMessages.GET_RECORD_BY_ID_API;
+import static kz.shyngys.diary.util.InfoMessages.GOT_ALL_RECORDS_API;
+import static kz.shyngys.diary.util.InfoMessages.GOT_RECORD_BY_ID_API;
+import static kz.shyngys.diary.util.InfoMessages.POST_CREATED_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.POST_CREATE_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.PUT_BEGIN_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.PUT_END_RECORD_API;
+import static kz.shyngys.diary.util.InfoMessages.RECORDS_API_URL;
 
 @RestController
 @RequestMapping(RECORDS_API_URL)

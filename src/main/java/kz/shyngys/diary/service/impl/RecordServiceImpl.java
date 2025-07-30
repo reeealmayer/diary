@@ -14,16 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static kz.shyngys.diary.util.Constants.CREATED_RECORD;
-import static kz.shyngys.diary.util.Constants.CREATE_RECORD;
-import static kz.shyngys.diary.util.Constants.DELETED_RECORD;
-import static kz.shyngys.diary.util.Constants.DELETE_RECORD;
-import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS;
-import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID;
-import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS;
-import static kz.shyngys.diary.util.Constants.GOT_RECORD_BY_ID;
-import static kz.shyngys.diary.util.Constants.UPDATED_RECORD;
-import static kz.shyngys.diary.util.Constants.UPDATE_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.CREATED_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.CREATE_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.DELETED_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.DELETE_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.GET_ALL_RECORDS;
+import static kz.shyngys.diary.util.InfoMessages.GET_RECORD_BY_ID;
+import static kz.shyngys.diary.util.InfoMessages.GOT_ALL_RECORDS;
+import static kz.shyngys.diary.util.InfoMessages.GOT_RECORD_BY_ID;
+import static kz.shyngys.diary.util.InfoMessages.UPDATED_RECORD;
+import static kz.shyngys.diary.util.InfoMessages.UPDATE_RECORD;
 import static kz.shyngys.diary.util.ErrorMessages.RECORD_NOT_FOUND;
 
 @Service

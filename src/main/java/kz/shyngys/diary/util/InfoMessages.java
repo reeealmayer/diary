@@ -3,7 +3,7 @@ package kz.shyngys.diary.util;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class Constants {
+public class InfoMessages {
 
     public static final String GET_ALL_RECORDS = "Получение всех записей";
     public static final String GOT_ALL_RECORDS = "Получены все записи: {}";
