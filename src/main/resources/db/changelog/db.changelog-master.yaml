@@ -3,3 +3,9 @@ databaseChangeLog:
       file: db/changelog/changes/001-create-record-table.yaml
   - include:
       file: db/changelog/changes/002-create-record-sequence.yaml
+  - include:
+      file: db/changelog/changes/003-alter-record-add-is_active.yaml
+  - include:
+      file: db/changelog/changes/004-rename-record-to-records.yaml
+  - include:
+      file: db/changelog/changes/005-add-constraint-not-null-is_active.yaml

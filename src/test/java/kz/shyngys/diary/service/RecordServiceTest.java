@@ -16,11 +16,13 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,8 +40,8 @@ class RecordServiceTest {
 
     @Test
     void testGetAll_ShouldReturnAll() {
-        Record record1 = new Record(1L, "record 1");
-        Record record2 = new Record(2L, "record 2");
+        Record record1 = new Record(1L, "record 1", true);
+        Record record2 = new Record(2L, "record 2", true);
 
         when(recordRepository.findAll()).thenReturn(List.of(record1, record2));
 
@@ -66,7 +68,7 @@ class RecordServiceTest {
     @Test
     void testGetById_ShouldReturnRecord() {
         long id = 1L;
-        Record record = new Record(id, "record");
+        Record record = new Record(id, "record", true);
         when(recordRepository.findById(anyLong())).thenReturn(Optional.of(record));
 
         Record result = recordService.getById(1L);
@@ -140,5 +142,34 @@ class RecordServiceTest {
         verify(recordRepository).save(argThat(record ->
                 record.getText().equals("Updated text") && record.getId().equals(id)
         ));
+    }
+
+    @Test
+    void softDelete_shouldSetIsActiveFalse_andSaveRecord() {
+        // given
+        Long id = 1L;
+        Record record = new Record();
+        record.setId(id);
+        record.setIsActive(true);
+
+        when(recordRepository.findById(id)).thenReturn(Optional.of(record));
+
+        // when
+        recordService.softDelete(id);
+
+        // then
+        assertFalse(record.getIsActive());
+        verify(recordRepository).save(record);
+    }
+
+    @Test
+    void softDelete_shouldThrowException_whenRecordNotFound() {
+        // given
+        Long id = 42L;
+        when(recordRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(RecordNotFoundException.class, () -> recordService.softDelete(id));
+        verify(recordRepository, never()).save(any());
     }
 }

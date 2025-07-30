@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-add-not-null-is-active
+      author: shyngys
+      changes:
+        - addNotNullConstraint:
+            tableName: records
+            columnName: is_active
+            columnDataType: boolean

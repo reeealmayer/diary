@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
+@Entity(name = "records")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -23,4 +23,6 @@ public class Record {
     private Long id;
 
     private String text;
+
+    private Boolean isActive = true;
 }

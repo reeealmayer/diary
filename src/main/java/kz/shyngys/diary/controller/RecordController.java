@@ -9,6 +9,7 @@ import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static kz.shyngys.diary.util.Constants.DELETED_RECORD_API;
+import static kz.shyngys.diary.util.Constants.DELETE_RECORD_API;
 import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS_API;
 import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID_API;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS_API;
@@ -41,7 +44,7 @@ public class RecordController {
     public ResponseEntity<List<RecordDto>> getAll() {
         log.info(GET_ALL_RECORDS_API);
         List<Record> all = recordService.getAll();
-        List<RecordDto> result = all.stream().map(a -> new RecordDto(a.getId(), a.getText())).toList();
+        List<RecordDto> result = all.stream().map(a -> new RecordDto(a.getId(), a.getText(), a.getIsActive())).toList();
         log.info(GOT_ALL_RECORDS_API);
         return ResponseEntity.ok(result);
     }
@@ -50,7 +53,7 @@ public class RecordController {
     public ResponseEntity<RecordDto> getById(@PathVariable Long id) {
         log.info(GET_RECORD_BY_ID_API, id);
         Record record = recordService.getById(id);
-        RecordDto result = new RecordDto(record.getId(), record.getText());
+        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
         log.info(GOT_RECORD_BY_ID_API, id);
         return ResponseEntity.ok(result);
     }
@@ -69,6 +72,14 @@ public class RecordController {
         log.info(PUT_BEGIN_RECORD_API, id, requestDto);
         recordService.update(id, requestDto);
         log.info(PUT_END_RECORD_API, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.info(DELETE_RECORD_API, id);
+        recordService.softDelete(id);
+        log.info(DELETED_RECORD_API, id);
         return ResponseEntity.ok().build();
     }
 }

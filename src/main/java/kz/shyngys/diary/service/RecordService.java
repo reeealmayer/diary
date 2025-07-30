@@ -34,4 +34,10 @@ public interface RecordService {
      * @return обновленная запись {@link Record}
      */
     Record update(Long id, UpdateRecordRequestDto requestDto);
+
+    /**
+     * Удаление записи. Установка флага is_active = true
+     * @param id - ид записи для удаления
+     */
+    void softDelete(Long id);
 }

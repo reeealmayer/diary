@@ -8,4 +8,5 @@ import lombok.Data;
 public class RecordDto {
     private long id;
     private String text;
+    private Boolean isActive;
 }

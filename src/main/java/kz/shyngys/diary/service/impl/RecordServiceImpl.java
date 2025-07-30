@@ -9,12 +9,15 @@ import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static kz.shyngys.diary.util.Constants.CREATED_RECORD;
 import static kz.shyngys.diary.util.Constants.CREATE_RECORD;
+import static kz.shyngys.diary.util.Constants.DELETED_RECORD;
+import static kz.shyngys.diary.util.Constants.DELETE_RECORD;
 import static kz.shyngys.diary.util.Constants.GET_ALL_RECORDS;
 import static kz.shyngys.diary.util.Constants.GET_RECORD_BY_ID;
 import static kz.shyngys.diary.util.Constants.GOT_ALL_RECORDS;
@@ -69,5 +72,15 @@ public class RecordServiceImpl implements RecordService {
         Record save = recordRepository.save(record);
         log.info(UPDATED_RECORD, save);
         return save;
+    }
+
+    @Transactional
+    @Override
+    public void softDelete(Long id) {
+        log.info(DELETE_RECORD, id);
+        Record record = getById(id);
+        record.setIsActive(false);
+        Record save = recordRepository.save(record);
+        log.info(DELETED_RECORD, save);
     }
 }

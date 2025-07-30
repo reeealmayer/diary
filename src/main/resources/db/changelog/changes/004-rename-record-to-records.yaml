@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-rename-record-to-records
+      author: shyngys
+      changes:
+        - renameTable:
+            oldTableName: record
+            newTableName: records
