@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 import static kz.shyngys.diary.util.ApiPaths.RECORDS_API_URL;
@@ -59,20 +60,22 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody CreateRecordRequestDto request) {
+    public ResponseEntity<RecordDto> create(@Valid @RequestBody CreateRecordRequestDto request) {
         log.info(POST_CREATE_RECORD_API, request);
-        recordService.create(request);
+        Record record = recordService.create(request);
+        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
         log.info(POST_CREATED_RECORD_API);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create(RECORDS_API_URL + "/" + result.getId())).body(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id,
+    public ResponseEntity<RecordDto> update(@PathVariable Long id,
                                        @Valid @RequestBody UpdateRecordRequestDto requestDto) {
         log.info(PUT_BEGIN_RECORD_API, id, requestDto);
-        recordService.update(id, requestDto);
+        Record record = recordService.update(id, requestDto);
+        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
         log.info(PUT_END_RECORD_API, id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
@@ -80,6 +83,6 @@ public class RecordController {
         log.info(DELETE_RECORD_API, id);
         recordService.softDelete(id);
         log.info(DELETED_RECORD_API, id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
