@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "records")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Record {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Record extends Auditable {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "record_seq")
