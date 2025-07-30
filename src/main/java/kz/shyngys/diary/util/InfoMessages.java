@@ -2,6 +2,8 @@ package kz.shyngys.diary.util;
 
 import lombok.experimental.UtilityClass;
 
+import static kz.shyngys.diary.util.ApiPaths.RECORDS_API_URL;
+
 @UtilityClass
 public class InfoMessages {
 
@@ -15,8 +17,6 @@ public class InfoMessages {
     public static final String UPDATED_RECORD = "Обновлена запись: {}";
     public static final String DELETE_RECORD = "Удаление записи id {}";
     public static final String DELETED_RECORD = "Удалена запись: {}";
-
-    public static final String RECORDS_API_URL = "/api/v1/records";
 
     public static final String GET_ALL_RECORDS_API = "GET " + RECORDS_API_URL;
     public static final String GOT_ALL_RECORDS_API = "END GET " + RECORDS_API_URL;

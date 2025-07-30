@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static kz.shyngys.diary.util.ApiPaths.RECORDS_API_URL;
 import static kz.shyngys.diary.util.InfoMessages.DELETED_RECORD_API;
 import static kz.shyngys.diary.util.InfoMessages.DELETE_RECORD_API;
 import static kz.shyngys.diary.util.InfoMessages.GET_ALL_RECORDS_API;
@@ -30,7 +31,6 @@ import static kz.shyngys.diary.util.InfoMessages.POST_CREATED_RECORD_API;
 import static kz.shyngys.diary.util.InfoMessages.POST_CREATE_RECORD_API;
 import static kz.shyngys.diary.util.InfoMessages.PUT_BEGIN_RECORD_API;
 import static kz.shyngys.diary.util.InfoMessages.PUT_END_RECORD_API;
-import static kz.shyngys.diary.util.InfoMessages.RECORDS_API_URL;
 
 @RestController
 @RequestMapping(RECORDS_API_URL)
