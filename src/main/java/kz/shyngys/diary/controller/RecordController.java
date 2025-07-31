@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
-import kz.shyngys.diary.model.Record;
 import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +43,7 @@ public class RecordController {
     @GetMapping
     public ResponseEntity<List<RecordDto>> getAll() {
         log.info(GET_ALL_RECORDS_API);
-        List<Record> all = recordService.getAll();
-        List<RecordDto> result = all.stream().map(a -> new RecordDto(a.getId(), a.getText(), a.getIsActive())).toList();
+        List<RecordDto> result = recordService.getAll();
         log.info(GOT_ALL_RECORDS_API);
         return ResponseEntity.ok(result);
     }
@@ -53,29 +51,26 @@ public class RecordController {
     @GetMapping("/{id}")
     public ResponseEntity<RecordDto> getById(@PathVariable Long id) {
         log.info(GET_RECORD_BY_ID_API, id);
-        Record record = recordService.getById(id);
-        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
+        RecordDto recordDto = recordService.getById(id);
         log.info(GOT_RECORD_BY_ID_API, id);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(recordDto);
     }
 
     @PostMapping
     public ResponseEntity<RecordDto> create(@Valid @RequestBody CreateRecordRequestDto request) {
         log.info(POST_CREATE_RECORD_API, request);
-        Record record = recordService.create(request);
-        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
+        RecordDto recordDto = recordService.create(request);
         log.info(POST_CREATED_RECORD_API);
-        return ResponseEntity.created(URI.create(RECORDS_API_URL + "/" + result.getId())).body(result);
+        return ResponseEntity.created(URI.create(RECORDS_API_URL + "/" + recordDto.getId())).body(recordDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RecordDto> update(@PathVariable Long id,
-                                       @Valid @RequestBody UpdateRecordRequestDto requestDto) {
+                                            @Valid @RequestBody UpdateRecordRequestDto requestDto) {
         log.info(PUT_BEGIN_RECORD_API, id, requestDto);
-        Record record = recordService.update(id, requestDto);
-        RecordDto result = new RecordDto(record.getId(), record.getText(), record.getIsActive());
+        RecordDto recordDto = recordService.update(id, requestDto);
         log.info(PUT_END_RECORD_API, id);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(recordDto);
     }
 
     @DeleteMapping("/{id}")

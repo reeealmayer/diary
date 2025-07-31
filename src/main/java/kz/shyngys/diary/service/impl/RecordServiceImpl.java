@@ -1,6 +1,7 @@
 package kz.shyngys.diary.service.impl;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.mapper.RecordMapper;
@@ -30,58 +31,69 @@ import static kz.shyngys.diary.util.InfoMessages.UPDATE_RECORD;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-//TODO возвращать дто
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final RecordMapper recordMapper;
 
     @Override
-    public List<Record> getAll() {
+    public List<RecordDto> getAll() {
         log.info(GET_ALL_RECORDS);
-        List<Record> result = recordRepository.findAll();
+        List<Record> records = recordRepository.findAll();
+        List<RecordDto> result = recordMapper.toDtoList(records);
         log.info(GOT_ALL_RECORDS, result);
         return result;
     }
 
     @Override
-    public Record getById(Long id) {
+    public RecordDto getById(Long id) {
         log.info(GET_RECORD_BY_ID, id);
-        Optional<Record> result = recordRepository.findById(id);
-        if (result.isEmpty()) {
+        Optional<Record> recordOptional = recordRepository.findById(id);
+        if (recordOptional.isEmpty()) {
             RecordNotFoundException exception = new RecordNotFoundException(String.format(RECORD_NOT_FOUND, id));
             log.error(exception.getMessage());
             throw exception;
         }
-        log.info(GOT_RECORD_BY_ID, id, result.get());
-        return result.get();
+        RecordDto result = recordMapper.toDto(recordOptional.get());
+        log.info(GOT_RECORD_BY_ID, id, result);
+        return result;
     }
 
+    @Transactional
     @Override
-    public Record create(CreateRecordRequestDto requestDto) {
+    public RecordDto create(CreateRecordRequestDto requestDto) {
         log.info(CREATE_RECORD, requestDto);
         Record save = recordRepository.save(recordMapper.toEntity(requestDto));
-        log.info(CREATED_RECORD, save);
-        return save;
+        RecordDto result = recordMapper.toDto(save);
+        log.info(CREATED_RECORD, result);
+        return result;
     }
 
+    @Transactional
     @Override
-    public Record update(Long id, UpdateRecordRequestDto requestDto) {
+    public RecordDto update(Long id, UpdateRecordRequestDto requestDto) {
         log.info(UPDATE_RECORD, id, requestDto);
-        Record record = getById(id);
+
+        Record record = recordRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(String.format(RECORD_NOT_FOUND, id)));
+
         record.setText(requestDto.getText());
-        Record save = recordRepository.save(record);
-        log.info(UPDATED_RECORD, save);
-        return save;
+
+        Record updated = recordRepository.save(record);
+        RecordDto result = recordMapper.toDto(updated);
+
+        log.info(UPDATED_RECORD, result);
+        return result;
     }
 
     @Transactional
     @Override
     public void softDelete(Long id) {
         log.info(DELETE_RECORD, id);
-        Record record = getById(id);
+        Record record = recordRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(String.format(RECORD_NOT_FOUND, id)));
         record.setIsActive(false);
-        Record save = recordRepository.save(record);
-        log.info(DELETED_RECORD, save);
+        Record updated = recordRepository.save(record);
+        log.info(DELETED_RECORD, updated);
     }
 }

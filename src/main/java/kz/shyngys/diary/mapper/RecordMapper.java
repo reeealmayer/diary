@@ -13,4 +13,6 @@ public interface RecordMapper {
     List<RecordDto> toDtoList(List<kz.shyngys.diary.model.Record> records);
 
     kz.shyngys.diary.model.Record toEntity(CreateRecordRequestDto dto);
+
+    kz.shyngys.diary.model.Record toEntity(RecordDto dto);
 }

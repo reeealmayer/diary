@@ -1,42 +1,47 @@
 package kz.shyngys.diary.service;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
-import kz.shyngys.diary.model.Record;
 
 import java.util.List;
 
 public interface RecordService {
     /**
      * Получение всех существующих записей
-     * @return список записей {@link Record}
+     *
+     * @return список записей {@link RecordDto}
      */
-    List<Record> getAll();
+    List<RecordDto> getAll();
 
     /**
      * Получение записи по ид
+     *
      * @param id - ид записи
-     * @return запись {@link Record}
+     * @return запись {@link RecordDto}
      */
-    Record getById(Long id);
+    RecordDto getById(Long id);
 
     /**
      * Создание записи
+     *
      * @param requestDto - запрос с моделью
-     * @return созданная запись с полученным ид {@link Record}
+     * @return созданная запись с полученным ид {@link RecordDto}
      */
-    Record create(CreateRecordRequestDto requestDto);
+    RecordDto create(CreateRecordRequestDto requestDto);
 
     /**
      * Обновление записи
-     * @param id - ид записи
+     *
+     * @param id         - ид записи
      * @param requestDto - модель с записью
-     * @return обновленная запись {@link Record}
+     * @return обновленная запись {@link RecordDto}
      */
-    Record update(Long id, UpdateRecordRequestDto requestDto);
+    RecordDto update(Long id, UpdateRecordRequestDto requestDto);
 
     /**
      * Удаление записи. Установка флага is_active = true
+     *
      * @param id - ид записи для удаления
      */
     void softDelete(Long id);

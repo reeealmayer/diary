@@ -1,6 +1,7 @@
 package kz.shyngys.diary.service;
 
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
+import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.mapper.RecordMapper;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+//TODO поправить тесты
 class RecordServiceTest {
 
     private RecordService recordService;
@@ -49,7 +52,7 @@ class RecordServiceTest {
 
         when(recordRepository.findAll()).thenReturn(List.of(record1, record2));
 
-        List<Record> result = recordService.getAll();
+        List<RecordDto> result = recordService.getAll();
 
         assertEquals(2, result.size());
         assertEquals(1L, result.getFirst().getId());
@@ -62,7 +65,7 @@ class RecordServiceTest {
     void testGetAll_ShouldReturnEmptyList() {
         when(recordRepository.findAll()).thenReturn(emptyList());
 
-        List<Record> result = recordService.getAll();
+        List<RecordDto> result = recordService.getAll();
 
         assertEquals(0, result.size());
 
@@ -73,13 +76,16 @@ class RecordServiceTest {
     void testGetById_ShouldReturnRecord() {
         long id = 1L;
         Record record = new Record(id, "record", true);
-        when(recordRepository.findById(anyLong())).thenReturn(Optional.of(record));
+        RecordDto expectedDto = new RecordDto(id, "record", true, LocalDateTime.now(), null);
 
-        Record result = recordService.getById(1L);
+        when(recordRepository.findById(id)).thenReturn(Optional.of(record));
+        when(recordMapper.toDto(record)).thenReturn(expectedDto);
 
-        assertEquals(record, result);
+        RecordDto result = recordService.getById(id);
 
+        assertEquals(expectedDto, result);
         verify(recordRepository, times(1)).findById(id);
+        verify(recordMapper, times(1)).toDto(record);
     }
 
     @Test
@@ -90,34 +96,42 @@ class RecordServiceTest {
     }
 
     @Test
-    void testCreate_ShouldReturnRecord() {
+    void testCreate_ShouldReturnRecordDto() {
         // given
         CreateRecordRequestDto dto = new CreateRecordRequestDto();
         dto.setText("Test record");
+
+        Record entityToSave = new Record();
+        entityToSave.setText("Test record");
 
         Record savedRecord = new Record();
         savedRecord.setId(1L);
         savedRecord.setText("Test record");
 
+        RecordDto expectedDto = new RecordDto();
+        expectedDto.setId(1L);
+        expectedDto.setText("Test record");
+
         // when
-        when(recordRepository.save(any(Record.class))).thenReturn(savedRecord);
+        when(recordMapper.toEntity(dto)).thenReturn(entityToSave);
+        when(recordRepository.save(entityToSave)).thenReturn(savedRecord);
+        when(recordMapper.toDto(savedRecord)).thenReturn(expectedDto);
 
         // then
-        Record result = recordService.create(dto);
+        RecordDto result = recordService.create(dto);
 
         // assertions
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("Test record", result.getText());
 
-        // verify that repository.save was called with expected Record
-        ArgumentCaptor<Record> captor = ArgumentCaptor.forClass(Record.class);
-        verify(recordRepository).save(captor.capture());
-        Assertions.assertEquals("Test record", captor.getValue().getText());
+        verify(recordMapper).toEntity(dto);
+        verify(recordRepository).save(entityToSave);
+        verify(recordMapper).toDto(savedRecord);
     }
 
     @Test
-    void testUpdate_ShouldReturnRecord() {
+    void testUpdate_ShouldReturnRecordDto() {
         // given
         Long id = 1L;
 
@@ -128,24 +142,29 @@ class RecordServiceTest {
         existingRecord.setId(id);
         existingRecord.setText("Old text");
 
-        Record updatedRecord = new Record();
-        updatedRecord.setId(id);
-        updatedRecord.setText("Updated text");
+        Record savedRecord = new Record();
+        savedRecord.setId(id);
+        savedRecord.setText("Updated text");
+
+        RecordDto expectedDto = new RecordDto();
+        expectedDto.setId(id);
+        expectedDto.setText("Updated text");
 
         when(recordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
-        when(recordRepository.save(any(Record.class))).thenReturn(updatedRecord);
+        when(recordRepository.save(existingRecord)).thenReturn(savedRecord);
+        when(recordMapper.toDto(savedRecord)).thenReturn(expectedDto);
 
         // when
-        Record result = recordService.update(id, requestDto);
+        RecordDto result = recordService.update(id, requestDto);
 
         // then
         Assertions.assertNotNull(result);
-        Assertions.assertEquals("Updated text", result.getText());
         Assertions.assertEquals(id, result.getId());
+        Assertions.assertEquals("Updated text", result.getText());
 
-        verify(recordRepository).save(argThat(record ->
-                record.getText().equals("Updated text") && record.getId().equals(id)
-        ));
+        verify(recordRepository).findById(id);
+        verify(recordRepository).save(existingRecord);
+        verify(recordMapper).toDto(savedRecord);
     }
 
     @Test
