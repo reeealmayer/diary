@@ -171,7 +171,7 @@ class RecordServiceTest {
     }
 
     @Test
-    void softDelete_shouldSetIsActiveFalse_andSaveRecord() {
+    void deactivate_shouldSetIsActiveFalse_andSaveRecord() {
         // given
         Long id = 1L;
         Record record = new Record();
@@ -181,7 +181,7 @@ class RecordServiceTest {
         when(recordRepository.findById(id)).thenReturn(Optional.of(record));
 
         // when
-        recordService.softDelete(id);
+        recordService.deactivate(id);
 
         // then
         assertFalse(record.getIsActive());
@@ -189,13 +189,13 @@ class RecordServiceTest {
     }
 
     @Test
-    void softDelete_shouldThrowException_whenRecordNotFound() {
+    void deactivate_shouldThrowException_whenRecordNotFound() {
         // given
         Long id = 42L;
         when(recordRepository.findById(id)).thenReturn(Optional.empty());
 
         // when + then
-        assertThrows(RecordNotFoundException.class, () -> recordService.softDelete(id));
+        assertThrows(RecordNotFoundException.class, () -> recordService.deactivate(id));
         verify(recordRepository, never()).save(any());
     }
 }

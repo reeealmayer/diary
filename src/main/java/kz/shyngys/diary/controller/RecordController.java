@@ -80,9 +80,9 @@ public class RecordController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         log.info(DELETE_RECORD_API, id);
-        recordService.softDelete(id);
+        recordService.deactivate(id);
         log.info(DELETED_RECORD_API, id);
         return ResponseEntity.noContent().build();
     }

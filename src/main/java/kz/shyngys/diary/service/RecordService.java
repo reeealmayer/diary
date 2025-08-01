@@ -43,5 +43,5 @@ public interface RecordService {
      *
      * @param id - ид записи для удаления
      */
-    void softDelete(Long id);
+    void deactivate(Long id);
 }

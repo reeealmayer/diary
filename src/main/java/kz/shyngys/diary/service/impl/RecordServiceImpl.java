@@ -91,7 +91,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional
     @Override
-    public void softDelete(Long id) {
+    public void deactivate(Long id) {
         log.info(DELETE_RECORD, id);
         Record record = recordRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(String.format(RECORD_NOT_FOUND, id)));
