@@ -3,8 +3,7 @@ package kz.shyngys.diary.service;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface RecordService {
     /**
@@ -12,7 +11,7 @@ public interface RecordService {
      *
      * @return список записей {@link RecordDto}
      */
-    List<RecordDto> getAll();
+    Page<RecordDto> getAll(int page, int size);
 
     /**
      * Получение записи по ид

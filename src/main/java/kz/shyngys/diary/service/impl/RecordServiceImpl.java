@@ -10,10 +10,12 @@ import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static kz.shyngys.diary.util.ErrorMessages.RECORD_NOT_FOUND;
@@ -37,10 +39,11 @@ public class RecordServiceImpl implements RecordService {
     private final RecordMapper recordMapper;
 
     @Override
-    public List<RecordDto> getAll() {
+    public Page<RecordDto> getAll(int page, int size) {
         log.info(GET_ALL_RECORDS);
-        List<Record> records = recordRepository.findAll();
-        List<RecordDto> result = recordMapper.toDtoList(records);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Record> records = recordRepository.findAll(pageable);
+        Page<RecordDto> result = records.map(recordMapper::toDto);
         log.info(GOT_ALL_RECORDS, result);
         return result;
     }

@@ -1,13 +1,17 @@
 package kz.shyngys.diary.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 
 import static kz.shyngys.diary.util.ApiPaths.RECORDS_API_URL;
 import static kz.shyngys.diary.util.InfoMessages.DELETED_RECORD_API;
@@ -36,14 +40,16 @@ import static kz.shyngys.diary.util.InfoMessages.PUT_END_RECORD_API;
 @RequestMapping(RECORDS_API_URL)
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class RecordController {
 
     private final RecordService recordService;
 
     @GetMapping
-    public ResponseEntity<List<RecordDto>> getAll() {
+    public ResponseEntity<Page<RecordDto>> getAll(@RequestParam(defaultValue = "1") @Min(1) int page,
+                                                  @RequestParam(defaultValue = "10") @Positive @Min(1) int size) {
         log.info(GET_ALL_RECORDS_API);
-        List<RecordDto> result = recordService.getAll();
+        Page<RecordDto> result = recordService.getAll(page - 1, size);
         log.info(GOT_ALL_RECORDS_API);
         return ResponseEntity.ok(result);
     }

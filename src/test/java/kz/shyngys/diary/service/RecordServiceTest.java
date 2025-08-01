@@ -12,14 +12,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -42,29 +46,40 @@ class RecordServiceTest {
 
     @Test
     void testGetAll_ShouldReturnAll() {
+        int page = 0;
+        int size = 10;
+
         Record record1 = new Record(1L, "record 1", true);
         Record record2 = new Record(2L, "record 2", true);
+        List<Record> recordList = List.of(record1, record2);
+        Page<Record> recordPage = new PageImpl<>(recordList);
 
-        when(recordRepository.findAll()).thenReturn(List.of(record1, record2));
 
-        List<RecordDto> result = recordService.getAll();
+        when(recordRepository.findAll(any(Pageable.class))).thenReturn(recordPage);
 
-        assertEquals(2, result.size());
-        assertEquals(1L, result.getFirst().getId());
-        assertEquals(2L, result.get(1).getId());
+        Page<RecordDto> result = recordService.getAll(page, size);
 
-        verify(recordRepository, times(1)).findAll();
+        assertEquals(2, result.getTotalElements());
+        assertEquals(1L, result.getContent().get(0).getId());
+        assertEquals(2L, result.getContent().get(1).getId());
+
+        verify(recordRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
     void testGetAll_ShouldReturnEmptyList() {
-        when(recordRepository.findAll()).thenReturn(emptyList());
+        int page = 0;
+        int size = 10;
 
-        List<RecordDto> result = recordService.getAll();
+        Page<Record> emptyPage = new PageImpl<>(Collections.emptyList());
+        when(recordRepository.findAll(any(Pageable.class))).thenReturn(emptyPage);
 
-        assertEquals(0, result.size());
+        Page<RecordDto> result = recordService.getAll(page, size);
 
-        verify(recordRepository, times(1)).findAll();
+        assertNotNull(result);
+        assertEquals(0, result.getTotalElements());
+
+        verify(recordRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -113,7 +128,7 @@ class RecordServiceTest {
         RecordDto result = recordService.create(dto);
 
         // assertions
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("Test record", result.getText());
 
@@ -147,7 +162,7 @@ class RecordServiceTest {
         RecordDto result = recordService.update(id, requestDto);
 
         // then
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
         Assertions.assertEquals(id, result.getId());
         Assertions.assertEquals("Updated text", result.getText());
 
