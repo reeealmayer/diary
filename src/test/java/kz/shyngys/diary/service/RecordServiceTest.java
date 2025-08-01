@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,25 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-//TODO поправить тесты
 class RecordServiceTest {
 
     private RecordService recordService;
     private RecordRepository recordRepository;
-    private RecordMapper recordMapper;
 
     @BeforeEach
     void setUp() {
         recordRepository = mock(RecordRepository.class);
-        recordMapper = Mappers.getMapper(RecordMapper.class);
-        recordService = new RecordServiceImpl(recordRepository, recordMapper);
+        recordService = new RecordServiceImpl(recordRepository, Mappers.getMapper(RecordMapper.class));
     }
 
     @Test
@@ -76,16 +71,16 @@ class RecordServiceTest {
     void testGetById_ShouldReturnRecord() {
         long id = 1L;
         Record record = new Record(id, "record", true);
-        RecordDto expectedDto = new RecordDto(id, "record", true, LocalDateTime.now(), null);
+        LocalDateTime date = LocalDateTime.now();
+        record.setCreateDate(date);
+        RecordDto expectedDto = new RecordDto(id, "record", true, date, null);
 
         when(recordRepository.findById(id)).thenReturn(Optional.of(record));
-        when(recordMapper.toDto(record)).thenReturn(expectedDto);
 
         RecordDto result = recordService.getById(id);
 
         assertEquals(expectedDto, result);
         verify(recordRepository, times(1)).findById(id);
-        verify(recordMapper, times(1)).toDto(record);
     }
 
     @Test
@@ -112,10 +107,7 @@ class RecordServiceTest {
         expectedDto.setId(1L);
         expectedDto.setText("Test record");
 
-        // when
-        when(recordMapper.toEntity(dto)).thenReturn(entityToSave);
         when(recordRepository.save(entityToSave)).thenReturn(savedRecord);
-        when(recordMapper.toDto(savedRecord)).thenReturn(expectedDto);
 
         // then
         RecordDto result = recordService.create(dto);
@@ -125,9 +117,7 @@ class RecordServiceTest {
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("Test record", result.getText());
 
-        verify(recordMapper).toEntity(dto);
         verify(recordRepository).save(entityToSave);
-        verify(recordMapper).toDto(savedRecord);
     }
 
     @Test
@@ -152,7 +142,6 @@ class RecordServiceTest {
 
         when(recordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
         when(recordRepository.save(existingRecord)).thenReturn(savedRecord);
-        when(recordMapper.toDto(savedRecord)).thenReturn(expectedDto);
 
         // when
         RecordDto result = recordService.update(id, requestDto);
@@ -164,7 +153,6 @@ class RecordServiceTest {
 
         verify(recordRepository).findById(id);
         verify(recordRepository).save(existingRecord);
-        verify(recordMapper).toDto(savedRecord);
     }
 
     @Test
