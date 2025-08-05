@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-create-users-sequence
+      author: shyngys
+      changes:
+        - createSequence:
+            sequenceName: users_sequence
+            startValue: 1
+            incrementBy: 1

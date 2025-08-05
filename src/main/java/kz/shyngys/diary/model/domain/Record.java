@@ -1,4 +1,4 @@
-package kz.shyngys.diary.model;
+package kz.shyngys.diary.model.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

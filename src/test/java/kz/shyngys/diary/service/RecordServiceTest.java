@@ -5,7 +5,7 @@ import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.mapper.RecordMapper;
-import kz.shyngys.diary.model.Record;
+import kz.shyngys.diary.model.domain.Record;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.impl.RecordServiceImpl;
 import org.junit.jupiter.api.Assertions;

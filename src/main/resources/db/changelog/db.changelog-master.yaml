@@ -11,3 +11,7 @@ databaseChangeLog:
       file: db/changelog/changes/005-add-constraint-not-null-is_active.yaml
   - include:
       file: db/changelog/changes/006-alter-records-add-update-create-date.yaml
+  - include:
+      file: db/changelog/changes/007-create-table-users.yaml
+  - include:
+      file: db/changelog/changes/008-create-users-sequence.yaml

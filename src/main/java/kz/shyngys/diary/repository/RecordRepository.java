@@ -1,6 +1,6 @@
 package kz.shyngys.diary.repository;
 
-import kz.shyngys.diary.model.Record;
+import kz.shyngys.diary.model.domain.Record;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
