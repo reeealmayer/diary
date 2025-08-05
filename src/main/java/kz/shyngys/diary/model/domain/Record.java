@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+//TODO: сделать привязку к юзеру
 public class Record extends Auditable {
     @Id
     @EqualsAndHashCode.Include

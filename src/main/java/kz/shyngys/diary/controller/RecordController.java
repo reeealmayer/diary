@@ -41,6 +41,7 @@ import static kz.shyngys.diary.util.InfoMessages.PUT_END_RECORD_API;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+        //TODO добавить авторизацию для методов
 public class RecordController {
 
     private final RecordService recordService;
