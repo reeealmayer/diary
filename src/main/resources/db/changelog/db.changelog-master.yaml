@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/changes/007-create-table-users.yaml
   - include:
       file: db/changelog/changes/008-create-users-sequence.yaml
+  - include:
+      file: db/changelog/changes/009-alter-users-add-email-column.yaml
