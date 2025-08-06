@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import kz.shyngys.diary.dto.CreateRecordRequestDto;
 import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
+import kz.shyngys.diary.security.CurrentUserProvider;
 import kz.shyngys.diary.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,16 +42,18 @@ import static kz.shyngys.diary.util.InfoMessages.PUT_END_RECORD_API;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-        //TODO добавить авторизацию для методов
+//TODO добавить авторизацию для методов
 public class RecordController {
 
     private final RecordService recordService;
+    private final CurrentUserProvider currentUserProvider;
 
     @GetMapping
     public ResponseEntity<Page<RecordDto>> getAll(@RequestParam(defaultValue = "1") @Min(1) int page,
                                                   @RequestParam(defaultValue = "10") @Positive @Min(1) int size) {
         log.info(GET_ALL_RECORDS_API);
-        Page<RecordDto> result = recordService.getAll(page - 1, size);
+        Long userId = currentUserProvider.getCurrentUser().getId();
+        Page<RecordDto> result = recordService.getAll(userId, page - 1, size);
         log.info(GOT_ALL_RECORDS_API);
         return ResponseEntity.ok(result);
     }

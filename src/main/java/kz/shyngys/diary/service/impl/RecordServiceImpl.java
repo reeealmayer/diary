@@ -33,16 +33,17 @@ import static kz.shyngys.diary.util.InfoMessages.UPDATE_RECORD;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+//TODO отрефакторить методы в связи с добавлением userId
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final RecordMapper recordMapper;
 
     @Override
-    public Page<RecordDto> getAll(int page, int size) {
+    public Page<RecordDto> getAll(Long userId, int page, int size) {
         log.info(GET_ALL_RECORDS);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Record> records = recordRepository.findAll(pageable);
+        Page<Record> records = recordRepository.findAllByUserId(userId, pageable);
         Page<RecordDto> result = records.map(recordMapper::toDto);
         log.info(GOT_ALL_RECORDS, result);
         return result;

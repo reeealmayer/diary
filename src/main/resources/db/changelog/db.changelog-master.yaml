@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changes/008-create-users-sequence.yaml
   - include:
       file: db/changelog/changes/009-alter-users-add-email-column.yaml
+  - include:
+      file: db/changelog/changes/010-add-user-to-records.yaml

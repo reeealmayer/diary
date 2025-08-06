@@ -11,7 +11,7 @@ public interface RecordService {
      *
      * @return список записей {@link RecordDto}
      */
-    Page<RecordDto> getAll(int page, int size);
+    Page<RecordDto> getAll(Long userId, int page, int size);
 
     /**
      * Получение записи по ид

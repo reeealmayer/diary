@@ -5,7 +5,9 @@ import kz.shyngys.diary.dto.RecordDto;
 import kz.shyngys.diary.dto.UpdateRecordRequestDto;
 import kz.shyngys.diary.exception.RecordNotFoundException;
 import kz.shyngys.diary.mapper.RecordMapper;
+import kz.shyngys.diary.model.Role;
 import kz.shyngys.diary.model.domain.Record;
+import kz.shyngys.diary.model.domain.User;
 import kz.shyngys.diary.repository.RecordRepository;
 import kz.shyngys.diary.service.impl.RecordServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -48,16 +50,17 @@ class RecordServiceTest {
     void testGetAll_ShouldReturnAll() {
         int page = 0;
         int size = 10;
+        User user = new User(1L, "email@mail.ru", "name", "password", Role.ROLE_USER);
 
-        Record record1 = new Record(1L, "record 1", true);
-        Record record2 = new Record(2L, "record 2", true);
+        Record record1 = new Record(1L, "record 1", true, user);
+        Record record2 = new Record(2L, "record 2", true, user);
         List<Record> recordList = List.of(record1, record2);
         Page<Record> recordPage = new PageImpl<>(recordList);
 
 
-        when(recordRepository.findAll(any(Pageable.class))).thenReturn(recordPage);
+        when(recordRepository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(recordPage);
 
-        Page<RecordDto> result = recordService.getAll(page, size);
+        Page<RecordDto> result = recordService.getAll(user.getId(), page, size);
 
         assertEquals(2, result.getTotalElements());
         assertEquals(1L, result.getContent().get(0).getId());
@@ -72,20 +75,20 @@ class RecordServiceTest {
         int size = 10;
 
         Page<Record> emptyPage = new PageImpl<>(Collections.emptyList());
-        when(recordRepository.findAll(any(Pageable.class))).thenReturn(emptyPage);
+        when(recordRepository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(emptyPage);
 
-        Page<RecordDto> result = recordService.getAll(page, size);
+        Page<RecordDto> result = recordService.getAll(1L, page, size);
 
         assertNotNull(result);
         assertEquals(0, result.getTotalElements());
 
-        verify(recordRepository, times(1)).findAll(any(Pageable.class));
+        verify(recordRepository, times(1)).findAllByUserId(anyLong(), any(Pageable.class));
     }
 
     @Test
     void testGetById_ShouldReturnRecord() {
         long id = 1L;
-        Record record = new Record(id, "record", true);
+        Record record = new Record(id, "record", true, null);
         LocalDateTime date = LocalDateTime.now();
         record.setCreateDate(date);
         RecordDto expectedDto = new RecordDto(id, "record", true, date, null);

@@ -31,6 +31,7 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
      * @return созданный пользователь
      */
     @Override
+    //TODO исключения кастомные сделать
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
             // Заменить на свои исключения
