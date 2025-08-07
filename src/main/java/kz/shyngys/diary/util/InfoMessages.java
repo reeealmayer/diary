@@ -7,8 +7,8 @@ import static kz.shyngys.diary.util.ApiPaths.RECORDS_API_URL;
 @UtilityClass
 public class InfoMessages {
 
-    public static final String GET_ALL_RECORDS = "Получение всех записей";
-    public static final String GOT_ALL_RECORDS = "Получены все записи: {}";
+    public static final String GET_RECORDS = "Получение записей для пользователя с id: {}, номер страницы {}, размер страницы {}";
+    public static final String GOT_RECORDS = "Получены записей для пользователя с id : {}";
     public static final String GET_RECORD_BY_ID = "Получение записи по id: {}";
     public static final String GOT_RECORD_BY_ID = "Получена запись с id = {} : {}";
     public static final String CREATE_RECORD = "Создание записи: {}";

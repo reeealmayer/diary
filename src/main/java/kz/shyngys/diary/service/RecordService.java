@@ -24,19 +24,21 @@ public interface RecordService {
     /**
      * Создание записи
      *
+     * @param username   пользователя
      * @param requestDto - запрос с моделью
      * @return созданная запись с полученным ид {@link RecordDto}
      */
-    RecordDto create(CreateRecordRequestDto requestDto);
+    RecordDto create(String username, CreateRecordRequestDto requestDto);
 
     /**
      * Обновление записи
      *
+     * @param userId     - ид пользователя
      * @param id         - ид записи
      * @param requestDto - модель с записью
      * @return обновленная запись {@link RecordDto}
      */
-    RecordDto update(Long id, UpdateRecordRequestDto requestDto);
+    RecordDto update(Long userId, Long id, UpdateRecordRequestDto requestDto);
 
     /**
      * Удаление записи. Установка флага is_active = true

@@ -1,5 +1,6 @@
 package kz.shyngys.diary.service.impl;
 
+import kz.shyngys.diary.exception.UserAlreadyExists;
 import kz.shyngys.diary.model.Role;
 import kz.shyngys.diary.model.domain.User;
 import kz.shyngys.diary.repository.UserRepository;
@@ -31,15 +32,13 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
      * @return созданный пользователь
      */
     @Override
-    //TODO исключения кастомные сделать
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            // Заменить на свои исключения
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UserAlreadyExists("Пользователь с таким именем уже существует");
         }
 
         if (repository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+            throw new UserAlreadyExists("Пользователь с таким email уже существует");
         }
 
         return save(user);
@@ -55,6 +54,12 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
+    }
+
+    @Override
+    public User getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
     /**

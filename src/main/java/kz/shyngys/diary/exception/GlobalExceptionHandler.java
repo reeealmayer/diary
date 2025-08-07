@@ -18,10 +18,22 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(UserAlreadyExists.class)
+    public ResponseEntity<?> handleUserAlreadyExists(UserAlreadyExists ex) {
+        log.error("UserAlreadyExists: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    }
+
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<?> handleRecordNotFoundException(RecordNotFoundException ex) {
         log.error("RecordNotFoundException: {}", ex.getMessage());
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(UserHasNoThisRecordException.class)
+    public ResponseEntity<?> handleUserHasNoThisRecordException(UserHasNoThisRecordException ex) {
+        log.error("UserHasNoThisRecordException: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -39,11 +40,13 @@ class RecordServiceTest {
 
     private RecordService recordService;
     private RecordRepository recordRepository;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
         recordRepository = mock(RecordRepository.class);
-        recordService = new RecordServiceImpl(recordRepository, Mappers.getMapper(RecordMapper.class));
+        userService = mock(UserService.class);
+        recordService = new RecordServiceImpl(recordRepository, Mappers.getMapper(RecordMapper.class), userService);
     }
 
     @Test
@@ -66,7 +69,7 @@ class RecordServiceTest {
         assertEquals(1L, result.getContent().get(0).getId());
         assertEquals(2L, result.getContent().get(1).getId());
 
-        verify(recordRepository, times(1)).findAll(any(Pageable.class));
+        verify(recordRepository, times(1)).findAllByUserId(anyLong(), any(Pageable.class));
     }
 
     @Test
@@ -125,10 +128,18 @@ class RecordServiceTest {
         expectedDto.setId(1L);
         expectedDto.setText("Test record");
 
+        User user = new User();
+        user.setUsername("test");
+        user.setRole(Role.ROLE_USER);
+        user.setEmail("test@mail.ru");
+        user.setPassword("test");
+        user.setId(1L);
+
         when(recordRepository.save(entityToSave)).thenReturn(savedRecord);
+        when(userService.getByUsername(anyString())).thenReturn(user);
 
         // then
-        RecordDto result = recordService.create(dto);
+        RecordDto result = recordService.create(user.getUsername(), dto);
 
         // assertions
         assertNotNull(result);
@@ -146,23 +157,29 @@ class RecordServiceTest {
         UpdateRecordRequestDto requestDto = new UpdateRecordRequestDto();
         requestDto.setText("Updated text");
 
+        User testUser = createTestUser();
+
         Record existingRecord = new Record();
         existingRecord.setId(id);
         existingRecord.setText("Old text");
+        existingRecord.setUser(testUser);
 
         Record savedRecord = new Record();
         savedRecord.setId(id);
         savedRecord.setText("Updated text");
+        savedRecord.setUser(testUser);
 
         RecordDto expectedDto = new RecordDto();
         expectedDto.setId(id);
         expectedDto.setText("Updated text");
 
+
         when(recordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
         when(recordRepository.save(existingRecord)).thenReturn(savedRecord);
+        when(userService.getById(anyLong())).thenReturn(testUser);
 
         // when
-        RecordDto result = recordService.update(id, requestDto);
+        RecordDto result = recordService.update(testUser.getId(), id, requestDto);
 
         // then
         assertNotNull(result);
@@ -200,5 +217,15 @@ class RecordServiceTest {
         // when + then
         assertThrows(RecordNotFoundException.class, () -> recordService.deactivate(id));
         verify(recordRepository, never()).save(any());
+    }
+
+    private User createTestUser() {
+        User user = new User();
+        user.setUsername("test");
+        user.setRole(Role.ROLE_USER);
+        user.setEmail("test@mail.ru");
+        user.setPassword("test");
+        user.setId(1L);
+        return user;
     }
 }

@@ -29,6 +29,13 @@ public interface UserService {
     User getByUsername(String username);
 
     /**
+     * Получение пользователя по ид
+     * @param id пользователя
+     * @return пользователь
+     */
+    User getById(Long id);
+
+    /**
      * Получение пользователя по имени пользователя
      * <p>
      * Нужен для Spring Security
