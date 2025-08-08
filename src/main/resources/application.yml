@@ -11,7 +11,15 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    dynamic: true
+    listener:
+        simple:
+          auto-startup: true
   datasource:
     url: jdbc:postgresql://localhost:5445/diary-db
     username: user

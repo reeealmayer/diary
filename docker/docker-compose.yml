@@ -13,5 +13,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: diary-rabbitmq
+    ports:
+      - "5672:5672"   # порт для приложений (AMQP)
+      - "15672:15672" # веб-интерфейс управления
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   pgdata:
+  rabbitmq_data:

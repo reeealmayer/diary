@@ -9,6 +9,7 @@ import kz.shyngys.diary.mapper.RecordMapper;
 import kz.shyngys.diary.model.domain.Record;
 import kz.shyngys.diary.model.domain.User;
 import kz.shyngys.diary.repository.RecordRepository;
+import kz.shyngys.diary.service.RabbitService;
 import kz.shyngys.diary.service.RecordService;
 import kz.shyngys.diary.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final RecordMapper recordMapper;
     private final UserService userService;
+    private final RabbitService rabbitService;
 
     @Override
     public Page<RecordDto> getAll(Long userId, int page, int size) {
@@ -76,6 +78,7 @@ public class RecordServiceImpl implements RecordService {
         record.setUser(byUsername);
         Record save = recordRepository.save(record);
         RecordDto result = recordMapper.toDto(save);
+        rabbitService.sendRecordCreatedEvent(result.getId(), "diary.exchange", "record.created");
         log.info(CREATED_RECORD, result);
         return result;
     }
