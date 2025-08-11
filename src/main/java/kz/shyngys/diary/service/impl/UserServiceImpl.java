@@ -36,11 +36,6 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
         if (repository.existsByUsername(user.getUsername())) {
             throw new UserAlreadyExists("Пользователь с таким именем уже существует");
         }
-
-        if (repository.existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExists("Пользователь с таким email уже существует");
-        }
-
         return save(user);
     }
 

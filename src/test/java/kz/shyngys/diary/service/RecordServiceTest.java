@@ -41,12 +41,14 @@ class RecordServiceTest {
     private RecordService recordService;
     private RecordRepository recordRepository;
     private UserService userService;
+    private RabbitService rabbitService;
 
     @BeforeEach
     void setUp() {
         recordRepository = mock(RecordRepository.class);
         userService = mock(UserService.class);
-        recordService = new RecordServiceImpl(recordRepository, Mappers.getMapper(RecordMapper.class), userService);
+        rabbitService = mock(RabbitService.class);
+        recordService = new RecordServiceImpl(recordRepository, Mappers.getMapper(RecordMapper.class), userService, rabbitService);
     }
 
     @Test

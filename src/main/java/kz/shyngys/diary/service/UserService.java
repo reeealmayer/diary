@@ -3,7 +3,6 @@ package kz.shyngys.diary.service;
 import kz.shyngys.diary.model.domain.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-//TODO: покрыть тестами
 public interface UserService {
 
     /**
