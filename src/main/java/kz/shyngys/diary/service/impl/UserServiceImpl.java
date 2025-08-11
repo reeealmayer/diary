@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static kz.shyngys.diary.util.ErrorMessages.USER_NOT_FOUND;
+import static kz.shyngys.diary.util.ErrorMessages.USER_WITH_THIS_NAME_IS_ALREADY_EXISTS;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
@@ -34,7 +37,7 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
     @Override
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new UserAlreadyExists("Пользователь с таким именем уже существует");
+            throw new UserAlreadyExists(USER_WITH_THIS_NAME_IS_ALREADY_EXISTS);
         }
         return save(user);
     }
@@ -47,14 +50,14 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
     @Override
     public User getByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     }
 
     @Override
     public User getById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
     }
 
     /**
