@@ -1,3 +1,7 @@
-test:
-  property: local
+  test:
+    property: local
   size: 9
+graylog:
+  ip: 127.0.0.1
+  port: 12201
+  maximumMessageSize: 8192
