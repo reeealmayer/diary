@@ -1,8 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Цвета для консоли -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- GELF аппендер (Graylog) -->
     <appender name="GELF" class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
-        <host>udp:127.0.0.1</host><!--graylog server ip-->
-        <port>12201</port><!--graylog udp port-->
+        <host>udp:127.0.0.1</host>
+        <port>12201</port>
         <version>1.1</version>
         <facility>springboot-with-graylog</facility>
         <extractStackTrace>true</extractStackTrace>
@@ -10,18 +15,32 @@
         <mdcProfiling>true</mdcProfiling>
         <timestampPattern>yyyy-MM-dd HH:mm:ss,SSSS</timestampPattern>
         <maximumMessageSize>8192</maximumMessageSize>
-        <!-- This are fields using MDC -->
         <mdcFields>mdcField1,mdcField2</mdcFields>
         <dynamicMdcFields>mdc.*,(mdc|MDC)fields</dynamicMdcFields>
         <includeFullMdc>true</includeFullMdc>
     </appender>
+
+    <!-- Оборачиваем GELF в асинхронный аппендер -->
+    <appender name="ASYNC_GELF" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- Логи будут буферизоваться и отправляться отдельным потоком -->
+        <queueSize>5000</queueSize>   <!-- размер очереди -->
+        <discardingThreshold>0</discardingThreshold> <!-- не выбрасывать WARN/ERROR -->
+        <appender-ref ref="GELF"/>
+    </appender>
+
+    <!-- Консоль -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+            <pattern>
+                %clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint}
+                %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx
+            </pattern>
         </encoder>
     </appender>
+
+    <!-- Root -->
     <root level="INFO">
-        <appender-ref ref="GELF"/>
+        <appender-ref ref="ASYNC_GELF"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
