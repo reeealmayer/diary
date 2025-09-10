@@ -91,7 +91,6 @@ public class UserServiceImpl implements kz.shyngys.diary.service.UserService {
      * Нужен для демонстрации
      */
     @Override
-    @Deprecated
     public void getAdmin() {
         var user = getCurrentUser();
         user.setRole(Role.ROLE_ADMIN);
