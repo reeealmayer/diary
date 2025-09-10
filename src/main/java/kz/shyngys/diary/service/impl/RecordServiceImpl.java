@@ -73,10 +73,10 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public RecordDto create(String username, CreateRecordRequestDto requestDto) {
         log.info(CREATE_RECORD, requestDto);
-        Record record = recordMapper.toEntity(requestDto);
+        Record recordToSave = recordMapper.toEntity(requestDto);
         User byUsername = userService.getByUsername(username);
-        record.setUser(byUsername);
-        Record save = recordRepository.save(record);
+        recordToSave.setUser(byUsername);
+        Record save = recordRepository.save(recordToSave);
         RecordDto result = recordMapper.toDto(save);
         rabbitService.sendRecordCreatedEvent(result.getId(), "diary.exchange", "record.created");
         log.info(CREATED_RECORD, result);
@@ -88,17 +88,17 @@ public class RecordServiceImpl implements RecordService {
     public RecordDto update(Long userId, Long recordId, UpdateRecordRequestDto requestDto) {
         log.info(UPDATE_RECORD, recordId, requestDto);
 
-        Record record = recordRepository.findById(recordId)
+        Record recordToUpdate = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordNotFoundException(String.format(RECORD_NOT_FOUND, recordId)));
 
         User user = userService.getById(userId);
-        if (!user.getId().equals(record.getUser().getId())) {
+        if (!user.getId().equals(recordToUpdate.getUser().getId())) {
             throw new UserHasNoThisRecordException(String.format(USER_HAS_NO_THIS_RECORD, userId, recordId));
         }
 
-        record.setText(requestDto.getText());
+        recordToUpdate.setText(requestDto.getText());
 
-        Record updated = recordRepository.save(record);
+        Record updated = recordRepository.save(recordToUpdate);
         RecordDto result = recordMapper.toDto(updated);
 
         log.info(UPDATED_RECORD, result);
@@ -109,10 +109,10 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public void deactivate(Long id) {
         log.info(DELETE_RECORD, id);
-        Record record = recordRepository.findById(id)
+        Record recordToDeactivate = recordRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(String.format(RECORD_NOT_FOUND, id)));
-        record.setIsActive(false);
-        Record updated = recordRepository.save(record);
+        recordToDeactivate.setIsActive(false);
+        Record updated = recordRepository.save(recordToDeactivate);
         log.info(DELETED_RECORD, updated);
     }
 }
